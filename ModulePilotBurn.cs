@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using UniLinq;
 using UnityEngine;
 
 namespace BetterExperienceSystem
@@ -19,10 +17,10 @@ namespace BetterExperienceSystem
 
         private void FixedUpdate()
         {
-            //TODO: Make this toggleable in Settings
-            //TODO: Make pilots get XP for doing a burn (or possibly on recovery?)
+            if (!Settings.ModEnabled) return;
+            if (!Settings.Skills) return;
             if (referenceEngine.currentThrottle == 0) return;
-            //TODO: We can probably optimise this a bit, doing alot of loops every frame
+            //TODO: We can probably optimise this a bit, doing a lot of loops every frame
             float pilotModifier = PilotModifier();
             float friendlyBonus = pilotModifier * 100;
             friendlyBonus = (float)Math.Round(friendlyBonus, 0);

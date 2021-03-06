@@ -1,33 +1,36 @@
 using Harmony;
+using JetBrains.Annotations;
 
 namespace BetterExperienceSystem
 {
     [HarmonyPatch(typeof(KerbalRoster))]
     [HarmonyPatch(nameof(KerbalRoster.GetExperienceLevelRequirement))]
+    [UsedImplicitly]
     public static class ExperienceLevelRequirementOverride
     {
-        static void Postfix(int level, ref float __result)
+        [UsedImplicitly]
+        private static void Postfix(int level, ref float result)
         {
             //Stock calls this as a Zero based index so we have to go +1
             switch (level+1)
             {
                 case 2:
-                    __result = BetterExperienceSystem.Instance.lv1Target;
+                    result = Settings.Lv1Target;
                     return;
                 case 3:
-                    __result = BetterExperienceSystem.Instance.lv2Target;
+                    result = Settings.Lv2Target;
                     return;
                 case 4:
-                    __result = BetterExperienceSystem.Instance.lv3Target;
+                    result = Settings.Lv3Target;
                     return;
                 case 5:
-                    __result = BetterExperienceSystem.Instance.lv4Target;
+                    result = Settings.Lv4Target;
                     return;
                 case 6:
-                    __result = BetterExperienceSystem.Instance.lv5Target;
+                    result = Settings.Lv5Target;
                     return;
                 default: 
-                    __result = 0;
+                    result = 0;
                     return;
             }
         }

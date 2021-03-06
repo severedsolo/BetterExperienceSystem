@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Harmony;
+using JetBrains.Annotations;
 using UniLinq;
 
 namespace BetterExperienceSystem
@@ -10,16 +11,17 @@ namespace BetterExperienceSystem
     [HarmonyPatch(nameof(KerbalRoster.GenerateExperienceLog))]
     public static class GenerateExperienceLogOverride
     {
-        static void Postfix(ref string __result, FlightLog log)
+        [UsedImplicitly]
+        private static void Postfix(ref string result, FlightLog log)
         {
             Dictionary<string, float> xpStrings = new Dictionary<string, float>();
             for (int i = 0; i < log.Entries.Count; i++)
             {
                 FlightLog.Entry e = log.Entries.ElementAt(i);
-                if (!BetterExperienceSystem.Instance.xpTypes.TryGetValue(e.type, out BetterExperienceType bet)) continue;
-                string s = bet.xpTypeName + e.target;
+                if (!BetterExperienceSystem.Instance.XpTypes.TryGetValue(e.type, out BetterExperienceType bet)) continue;
+                string s = bet.XpTypeName + e.target;
                 float additionalXp = Utilities.GetXpForType(e.type, e.target);
-                if (!xpStrings.TryGetValue(s, out float newXp)) xpStrings.Add(s, additionalXp);
+                if (!xpStrings.TryGetValue(s, out float _)) xpStrings.Add(s, additionalXp);
                 else xpStrings[s] += additionalXp;
             }
 
@@ -31,7 +33,7 @@ namespace BetterExperienceSystem
                 sb.AppendLine(kvp.Key+" = "+Math.Round(kvp.Value, 0));
             }
 
-            __result = sb.ToString();
+            result = sb.ToString();
         }
     }
 }

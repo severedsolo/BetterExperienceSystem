@@ -8,6 +8,7 @@ namespace BetterExperienceSystem
         public static void Log(string messageToLog, LogLevel logLevel)
         {
             string logColor = String.Empty;
+            // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
             switch (logLevel)
             {
                 case LogLevel.Error:

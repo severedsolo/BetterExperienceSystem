@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using KSP.UI.Screens;
 using UniLinq;
 using UnityEngine;
 
@@ -11,6 +10,8 @@ namespace BetterExperienceSystem
     {
         private void Start()
         {
+            if (!Settings.ModEnabled) return;
+            if (!Settings.Skills) return;
             GameEvents.OnVesselRecoveryRequested.Add(ProcessPilotXp);
             GameEvents.OnScienceRecieved.Add(ProcessScientistXp);
             GameEvents.OnEVAConstructionModePartAttached.Add(OnEvaConstruct);
@@ -18,13 +19,13 @@ namespace BetterExperienceSystem
             GameEvents.onVesselSOIChanged.Add(OnSOIChange);
         }
 
-        private void OnSOIChange(GameEvents.HostedFromToAction<Vessel, CelestialBody> eventData)
+        private static void OnSOIChange(GameEvents.HostedFromToAction<Vessel, CelestialBody> eventData)
         {
             if (!HighLogic.CurrentGame.Parameters.CustomParams<GameParameters.AdvancedParams>().ImmediateLevelUp) return;
             ProcessPilotXp(eventData.host);
         }
 
-        private void ProcessPilotXp(Vessel v)
+        private static void ProcessPilotXp(Vessel v)
         {
             Logging.Log("VesselRecoveryProcessing", LogLevel.Info);
             List<ProtoCrewMember> crew = v.GetVesselCrew();
@@ -52,7 +53,7 @@ namespace BetterExperienceSystem
             }
         }
 
-        private void ProcessScientistXp(float scienceAmount, ScienceSubject subject, ProtoVessel pv, bool reverseEngineered)
+        private static void ProcessScientistXp(float scienceAmount, ScienceSubject subject, ProtoVessel pv, bool reverseEngineered)
         {
             if (reverseEngineered) return;
             if (scienceAmount < 0.1f) return;
@@ -67,7 +68,7 @@ namespace BetterExperienceSystem
                 for (int logCount = log.Count - 1; logCount >= 0; logCount--)
                 {
                     FlightLog.Entry logEntry = log[logCount];
-                    if (AwardXP(logEntry, pv.vesselRef.mainBody.name, "scientistXP", p)) continue;
+                    if (AwardXp(logEntry, pv.vesselRef.mainBody.name, "scientistXP", p)) continue;
                     dontAward = true;
                     break;
                 }
@@ -78,7 +79,7 @@ namespace BetterExperienceSystem
             }
         }
 
-        private bool AwardXP(FlightLog.Entry logEntry, string currentBody, string xpTypeToCheck, ProtoCrewMember p)
+        private static bool AwardXp(FlightLog.Entry logEntry, string currentBody, string xpTypeToCheck, ProtoCrewMember p)
         {
             if (logEntry.type != xpTypeToCheck) return true;
             //If they already picked up this XP on this flight, no duplicates.
@@ -90,7 +91,7 @@ namespace BetterExperienceSystem
             return true;
         }
 
-        private void OnEvaConstruct(Vessel constructVessel, Part constructPart)
+        private static void OnEvaConstruct(Vessel constructVessel, Part constructPart)
         {
             List<Vessel> loadedVessels = FlightGlobals.VesselsLoaded;
             for (int i = 0; i < loadedVessels.Count; i++)
@@ -105,7 +106,7 @@ namespace BetterExperienceSystem
                 for (int logCount = log.Count - 1; logCount >= 0; logCount--)
                 {
                     FlightLog.Entry logEntry = log[logCount];
-                    if (AwardXP(logEntry, v.mainBody.name, "engineerXP", p)) continue;
+                    if (AwardXp(logEntry, v.mainBody.name, "engineerXP", p)) continue;
                     dontAward = true;
                     break;
                 }
@@ -114,6 +115,15 @@ namespace BetterExperienceSystem
                 p.flightLog.AddEntry("engineerXP", v.mainBody.name);
                 Logging.Log("Awarded engineerXp to " + p.name + " for orbital construction around " + v.mainBody.name, LogLevel.Info);
             }
+        }
+
+        private void OnDisable()
+        {
+            GameEvents.OnVesselRecoveryRequested.Remove(ProcessPilotXp);
+            GameEvents.OnScienceRecieved.Remove(ProcessScientistXp);
+            GameEvents.OnEVAConstructionModePartAttached.Remove(OnEvaConstruct);
+            GameEvents.OnEVAConstructionModePartDetached.Remove(OnEvaConstruct);
+            GameEvents.onVesselSOIChanged.Remove(OnSOIChange);
         }
     }
 }

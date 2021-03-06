@@ -1,55 +1,57 @@
 using Harmony;
-using UnityEngine;
+using JetBrains.Annotations;
 
 namespace BetterExperienceSystem
 {
     [HarmonyPatch(typeof(KerbalRoster))]
     [HarmonyPatch(nameof(KerbalRoster.CalculateExperienceLevel))]
+    [UsedImplicitly]
     public static class CalculateExperienceLevelOverride
     {
-        static void Postfix(ref float xp, ref int __result)
+        [UsedImplicitly]
+        private static void Postfix(ref float xp, ref int result)
         {
             for (int i = 5; i >= 0; i--)
             {
                 switch (i)
                 {
                     case 5:
-                        if (xp >= BetterExperienceSystem.Instance.lv5Target)
+                        if (xp >= Settings.Lv5Target)
                         {
-                            __result = 5;
+                            result = 5;
                             return;
                         }
                         break;
                     case 4:
-                        if (xp >= BetterExperienceSystem.Instance.lv4Target)
+                        if (xp >= Settings.Lv4Target)
                         {
-                            __result = 4;
+                            result = 4;
                             return;
                         }
                         break;
                     case 3:
-                        if (xp >= BetterExperienceSystem.Instance.lv3Target)
+                        if (xp >= Settings.Lv3Target)
                         {
-                            __result = 3;
+                            result = 3;
                             return;
                         }
                         break;
                     case 2:
-                        if (xp >= BetterExperienceSystem.Instance.lv2Target)
+                        if (xp >= Settings.Lv2Target)
                         {
-                            __result = 2;
+                            result = 2;
                             return;
                         }
                         break;
                     case 1:
-                        if (xp >= BetterExperienceSystem.Instance.lv1Target)
+                        if (xp >= Settings.Lv1Target)
                         {
-                            __result = 1;
+                            result = 1;
                             return;
                         }
                         break;
                     default:
-                        __result = 0;
+                        result = 0;
                         return;
                 }
             }

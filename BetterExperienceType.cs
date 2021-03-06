@@ -1,33 +1,28 @@
 using KSP.Localization;
-using KSP.UI;
-using UniLinq;
-using UnityEngine;
-using UnityEngine.SocialPlatforms;
 
 namespace BetterExperienceSystem
 {
     public class BetterExperienceType
     {
-        private string xpName;
-        public string xpTypeName;
-        public float xpNotHomeValue;
-        public float xpHomeValue;
+        public readonly string XpTypeName;
+        public readonly float XpNotHomeValue;
+        public readonly float XpHomeValue;
 
-        public string XpName => xpName;
+        public string XpName { get; }
 
         public BetterExperienceType(string name, string typeName, float notHomeValue, float homeValue = 0)
         {
-            xpName = name;
+            XpName = name;
             if (typeName.Contains("autoLOC"))
             {
-                xpTypeName = Localizer.Format(typeName);
-                xpTypeName = xpTypeName.Substring(0, xpTypeName.IndexOf('<'));
+                XpTypeName = Localizer.Format(typeName);
+                XpTypeName = XpTypeName.Substring(0, XpTypeName.IndexOf('<'));
             }
-            else xpTypeName = typeName;
+            else XpTypeName = typeName;
 
-            xpNotHomeValue = notHomeValue;
-            xpHomeValue = homeValue;
-            Logging.Log("New XP Type logged: " + xpName + " " + xpTypeName + " " + xpNotHomeValue + " " + xpHomeValue, LogLevel.Info);
+            XpNotHomeValue = notHomeValue;
+            XpHomeValue = homeValue;
+            Logging.Log("New XP Type logged: " + XpName + " " + XpTypeName + " " + XpNotHomeValue + " " + XpHomeValue, LogLevel.Info);
         }
     }
 }

@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Contracts.Templates;
-using KSP.UI.Screens.SpaceCenter.MissionSummaryDialog;
 using UniLinq;
 
 namespace BetterExperienceSystem
@@ -14,12 +12,12 @@ namespace BetterExperienceSystem
 
         public static float GetXpForType(string xpName, string bodyName)
         {
-            BetterExperienceSystem.Instance.xpTypes.TryGetValue(xpName, out BetterExperienceType xpType);
+            BetterExperienceSystem.Instance.XpTypes.TryGetValue(xpName, out BetterExperienceType xpType);
             if (xpType == null) return 0;
             //If a mod has added an XP type that gives exactly enough XP to level a kerbal up, assume that was the intention (only 2 I know of are Strategia and MKS which both use it explicitly for this purpose)
-            if (!stockTypes.Contains(xpType.XpName) && stockLevels.Contains(xpType.xpHomeValue)) return ConvertedStockLevelXp(xpType.xpHomeValue);
-            if (FlightGlobals.GetHomeBody().name == bodyName) return xpType.xpHomeValue;
-            return xpType.xpNotHomeValue * BodyFromName(bodyName).scienceValues.RecoveryValue;
+            if (!stockTypes.Contains(xpType.XpName) && stockLevels.Contains(xpType.XpHomeValue)) return ConvertedStockLevelXp(xpType.XpHomeValue);
+            if (FlightGlobals.GetHomeBody().name == bodyName) return xpType.XpHomeValue;
+            return xpType.XpNotHomeValue * BodyFromName(bodyName).scienceValues.RecoveryValue;
         }
 
         public static string HighestRankKerbal(string skill, ProtoVessel pv)
@@ -35,13 +33,12 @@ namespace BetterExperienceSystem
             {
                 ProtoCrewMember p = crew.ElementAt(i);
                 if (!p.HasEffect(skill)) continue;
-                if (p.experienceLevel > level)
-                {
-                    level = p.experienceLevel;
-                    nameToReturn = p.displayName;
-                }
+                if (p.experienceLevel <= level) continue;
+                level = p.experienceLevel;
+                nameToReturn = p.displayName;
             }
 
+            // ReSharper disable once InvertIf
             if (nameToReturn == String.Empty)
             {
                 if (crew.Count == 0) nameToReturn = "Probe Core";
@@ -60,6 +57,7 @@ namespace BetterExperienceSystem
                 {
                     ProtoPartModuleSnapshot pps = moduleList.ElementAt(moduleCount);
                     ModuleSAS sas = pps.moduleRef as ModuleSAS;
+                    // ReSharper disable once Unity.PerformanceCriticalCodeNullComparison
                     if (sas == null) continue;
                     level = Math.Max(sas.SASServiceLevel, level);
                 }
@@ -107,15 +105,15 @@ namespace BetterExperienceSystem
                     switch (i+1)
                     {
                         case 1:
-                            return BetterExperienceSystem.Instance.lv1Target;
+                            return Settings.Lv1Target;
                         case 2: 
-                            return BetterExperienceSystem.Instance.lv2Target;
+                            return Settings.Lv2Target;
                         case 3:
-                            return BetterExperienceSystem.Instance.lv3Target;
+                            return Settings.Lv3Target;
                         case 4:
-                            return BetterExperienceSystem.Instance.lv4Target;
+                            return Settings.Lv4Target;
                         case 5:
-                            return BetterExperienceSystem.Instance.lv5Target;
+                            return Settings.Lv5Target;
                     }
                 }
             }
