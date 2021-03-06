@@ -18,9 +18,10 @@ namespace BetterExperienceSystem
             GameEvents.onVesselSOIChanged.Add(OnSOIChange);
         }
 
-        private void OnSOIChange(GameEvents.HostedFromToAction<Vessel, CelestialBody> data)
+        private void OnSOIChange(GameEvents.HostedFromToAction<Vessel, CelestialBody> eventData)
         {
-            //TODO: Handle if Levelling up immediately is enabled.
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<GameParameters.AdvancedParams>().ImmediateLevelUp) return;
+            ProcessPilotXp(eventData.host);
         }
 
         private void ProcessPilotXp(Vessel v)
