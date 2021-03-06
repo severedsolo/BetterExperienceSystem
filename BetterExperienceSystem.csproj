@@ -235,7 +235,6 @@
         <Compile Include="CustomExperienceHandler.cs" />
         <Compile Include="ExperienceLevelRequirementOverride.cs" />
         <Compile Include="GenerateExperienceLogOverride.cs" />
-        <Compile Include="HarmonyPatcher.cs" />
         <Compile Include="CalculateExperienceLevelOverride.cs" />
         <Compile Include="CalculateExperienceOverride.cs" />
         <Compile Include="Logging.cs" />

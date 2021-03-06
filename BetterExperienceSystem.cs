@@ -15,17 +15,23 @@ namespace BetterExperienceSystem
     {
         public static BetterExperienceSystem Instance;
         public Dictionary<string, BetterExperienceType> xpTypes = new Dictionary<string, BetterExperienceType>();
-        public float lv5Target = 229;
-        public float lv4Target = 111;
-        public float lv3Target = 60;
-        public float lv2Target = 22;
-        public float lv1Target = 4;
+        public float lv5Target = 243;
+        public float lv4Target = 151;
+        public float lv3Target = 84;
+        public float lv2Target = 31;
+        public float lv1Target = 5;
 
         private void Awake()
         {
             DontDestroyOnLoad(this);
             Instance = this;
             LoadSettings();
+        }
+        private void SetupSkillBasedXp()
+        {
+            KerbalRoster.AddExperienceType("pilotXP", "Completed a flight to ", 1.0f, 1.0f);
+            KerbalRoster.AddExperienceType("scientistXP", "Transmitted science from ", 1.0f, 1.0f);
+            KerbalRoster.AddExperienceType("engineerXP", "Performed in-flight construction at ", 1.0f, 1.0f);
         }
 
         private void LoadSettings()
@@ -52,6 +58,7 @@ namespace BetterExperienceSystem
             var harmony = HarmonyInstance.Create("BetterExperienceSystem");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
             Logging.Log("Patching Complete", LogLevel.Info);
+            SetupSkillBasedXp();
         }
 
         public void RegisterNewExperienceType(string name, string typeName, float notHomeValue, float homeValue = 0)

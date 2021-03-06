@@ -6,44 +6,46 @@ using UnityEngine;
 
 namespace BetterExperienceSystem
 {
+    [KSPAddon(KSPAddon.Startup.Flight, false)]
     public class CustomExperienceHandler : MonoBehaviour
     {
         private void Start()
         {
-            GameEvents.onVesselRecoveryProcessing.Add(ProcessPilotXp);
+            GameEvents.OnVesselRecoveryRequested.Add(ProcessPilotXp);
             GameEvents.OnScienceRecieved.Add(ProcessScientistXp);
             GameEvents.OnEVAConstructionModePartAttached.Add(OnEvaConstruct);
             GameEvents.OnEVAConstructionModePartDetached.Add(OnEvaConstruct);
-            SetupSkillBasedXp();
+            GameEvents.onVesselSOIChanged.Add(OnSOIChange);
         }
 
-        private void ProcessPilotXp(ProtoVessel pv, MissionRecoveryDialog dialog, float kscMultiplier)
+        private void OnSOIChange(GameEvents.HostedFromToAction<Vessel, CelestialBody> data)
+        {
+            //TODO: Handle if Levelling up immediately is enabled.
+        }
+
+        private void ProcessPilotXp(Vessel v)
         {
             Logging.Log("VesselRecoveryProcessing", LogLevel.Info);
-            List<ProtoCrewMember> crew = pv.GetVesselCrew();
+            List<ProtoCrewMember> crew = v.GetVesselCrew();
             for (int i = 0; i < crew.Count; i++)
             {
                 ProtoCrewMember p = crew.ElementAt(i);
                 if (!p.HasEffect("FullVesselControlSkill")) continue;
                 FlightLog log = p.flightLog;
-                //No point iterating the whole list when we just want the last flight
-                int lastEntry = log.Last().flight;
                 string highestScoringBody = String.Empty;
                 float highestScore = 0;
                 for (int logEntryCount = log.Count - 1; logEntryCount >= 0; logEntryCount--)
                 {
                     FlightLog.Entry logEntry = log[logEntryCount];
-                    //Once we've checked the last flight we can break
-                    //Incidentally, not using ModuleTripLogger for this as the Kerbal might not have gone as far as the craft has
-                    //(or may have gone further if they hitched a lift from orbit) 
-                    if (logEntry.flight < lastEntry) break;
                     //Pilots get XP for the highest scoring target they visited (General rule is, one bonus XP per flight).
                     //Yes people are going to cheese this and do quick flights, but.. whatever.
+                    if (logEntry.target == String.Empty) continue;
                     float recoveryValue = Utilities.BodyFromName(logEntry.target).scienceValues.RecoveryValue;
                     if (recoveryValue <= highestScore) continue;
                     highestScore = recoveryValue;
                     highestScoringBody = logEntry.target;
                 }
+                if (highestScoringBody == String.Empty) continue;
                 p.flightLog.AddEntry("pilotXP", highestScoringBody);
                 Logging.Log("Awarded pilotXP to " + p.name + " for reaching " + highestScoringBody, LogLevel.Info);
             }
@@ -60,12 +62,10 @@ namespace BetterExperienceSystem
                 ProtoCrewMember p = crew.ElementAt(i);
                 if (!p.HasEffect("ScienceSkill")) continue;
                 FlightLog log = p.flightLog;
-                int lastFlight = log.Last().flight;
                 bool dontAward = false;
                 for (int logCount = log.Count - 1; logCount >= 0; logCount--)
                 {
                     FlightLog.Entry logEntry = log[logCount];
-                    if (logEntry.flight < lastFlight) break;
                     if (AwardXP(logEntry, pv.vesselRef.mainBody.name, "scientistXP", p)) continue;
                     dontAward = true;
                     break;
@@ -100,12 +100,10 @@ namespace BetterExperienceSystem
                 ProtoCrewMember p = k.vessel.GetVesselCrew().FirstOrDefault();
                 if (!p.HasEffect("RepairSkill")) continue;
                 FlightLog log = p.flightLog;
-                int lastFlight = log.Last().flight;
                 bool dontAward = false;
                 for (int logCount = log.Count - 1; logCount >= 0; logCount--)
                 {
                     FlightLog.Entry logEntry = log[logCount];
-                    if (logEntry.flight < lastFlight) break;
                     if (AwardXP(logEntry, v.mainBody.name, "engineerXP", p)) continue;
                     dontAward = true;
                     break;
@@ -113,14 +111,8 @@ namespace BetterExperienceSystem
 
                 if (dontAward) continue;
                 p.flightLog.AddEntry("engineerXP", v.mainBody.name);
+                Logging.Log("Awarded engineerXp to " + p.name + " for orbital construction around " + v.mainBody.name, LogLevel.Info);
             }
-        }
-
-        private void SetupSkillBasedXp()
-        {
-            KerbalRoster.AddExperienceType("pilotXP", "Completed a flight to", 1.0f, 1.0f);
-            KerbalRoster.AddExperienceType("scientistXP", "Transmitted science from", 1.0f, 1.0f);
-            KerbalRoster.AddExperienceType("engineerXP", "Performed in-flight construction at", 1.0f, 1.0f);
         }
     }
 }
