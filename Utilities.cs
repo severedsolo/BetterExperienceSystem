@@ -122,7 +122,7 @@ namespace BetterExperienceSystem
             return 0;
         }
 
-        private static CelestialBody BodyFromName(string bodyName)
+        public static CelestialBody BodyFromName(string bodyName)
         {
             for (int i = 0; i < FlightGlobals.Bodies.Count; i++)
             {

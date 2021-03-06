@@ -232,6 +232,7 @@
         <Compile Include="AddExperienceInterceptor.cs" />
         <Compile Include="BetterExperienceSystem.cs" />
         <Compile Include="BetterExperienceType.cs" />
+        <Compile Include="CustomExperienceHandler.cs" />
         <Compile Include="ExperienceLevelRequirementOverride.cs" />
         <Compile Include="GenerateExperienceLogOverride.cs" />
         <Compile Include="HarmonyPatcher.cs" />

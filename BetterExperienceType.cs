@@ -27,7 +27,7 @@ namespace BetterExperienceSystem
 
             xpNotHomeValue = notHomeValue;
             xpHomeValue = homeValue;
-            Debug.Log("[BetterExperienceLevel]: New XP Type logged: " + xpName + " " + xpTypeName + " " + xpNotHomeValue + " " + xpHomeValue);
+            Logging.Log("New XP Type logged: " + xpName + " " + xpTypeName + " " + xpNotHomeValue + " " + xpHomeValue, LogLevel.Info);
         }
     }
 }

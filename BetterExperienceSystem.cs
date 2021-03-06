@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Experience;
+using Harmony;
 using KSP.UI;
 using KSP.UI.Screens;
 using KSP.UI.TooltipTypes;
@@ -23,7 +25,12 @@ namespace BetterExperienceSystem
         {
             DontDestroyOnLoad(this);
             Instance = this;
-            //TODO: Move the loading stuff to it's own method and call it in a Scenario Module so player doesn't have to restart KSP to save settings
+            LoadSettings();
+        }
+
+        private void LoadSettings()
+        {
+            //TODO: Call it in a Scenario Module so player doesn't have to restart KSP to save settings
             ConfigNode cn = ConfigNode.Load(KSPUtil.ApplicationRootPath + "/GameData/BetterExperienceSystem/Levels.cfg");
             if (cn == null)
             {
@@ -31,13 +38,20 @@ namespace BetterExperienceSystem
                 //TODO: Make it save the settings file if not found
                 return;
             }
-
-
+        //TODO: These probably need to be rebalanced to take into account Trait Specific XP
             float.TryParse(cn.GetValue("lv5"), out lv5Target);
             float.TryParse(cn.GetValue("lv4"), out lv4Target);
             float.TryParse(cn.GetValue("lv3"), out lv3Target);
             float.TryParse(cn.GetValue("lv2"), out lv2Target);
             float.TryParse(cn.GetValue("lv1"), out lv1Target);
+        }
+
+        private void Start()
+        {
+            Logging.Log("Starting Harmony Patcher", LogLevel.Info);
+            var harmony = HarmonyInstance.Create("BetterExperienceSystem");
+            harmony.PatchAll(Assembly.GetExecutingAssembly());
+            Logging.Log("Patching Complete", LogLevel.Info);
         }
 
         public void RegisterNewExperienceType(string name, string typeName, float notHomeValue, float homeValue = 0)
