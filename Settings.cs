@@ -36,6 +36,12 @@ namespace BetterExperienceSystem
             float.TryParse(cn.GetValue("xpToLv3"), out Lv3Target);
             float.TryParse(cn.GetValue("xpToLv2"), out Lv2Target);
             float.TryParse(cn.GetValue("xpToLv1"), out Lv1Target);
+            float.TryParse(cn.GetValue("lv5Boost"), out Lv5Boost);
+            float.TryParse(cn.GetValue("lv4Boost"), out Lv4Boost);
+            float.TryParse(cn.GetValue("lv3Boost"), out Lv3Boost);
+            float.TryParse(cn.GetValue("lv2Boost"), out Lv2Boost);
+            float.TryParse(cn.GetValue("lv1Boost"), out Lv1Boost);
+            float.TryParse(cn.GetValue("lv0Boost"), out Lv0Boost);
             bool.TryParse(cn.GetValue("pilotSkills"), out PilotSkills);
             bool.TryParse(cn.GetValue("scientistSkills"), out ScientistSkills);
             bool.TryParse(cn.GetValue("engineerSkills"), out EngineerSkills);
@@ -51,6 +57,12 @@ namespace BetterExperienceSystem
             cn.AddValue("xpToLv3", Lv3Target);
             cn.AddValue("xpToLv2", Lv2Target);
             cn.AddValue("xpToLv1", Lv1Target);
+            cn.AddValue("lv5Boost", Lv5Boost);
+            cn.AddValue("lv4Boost", Lv4Boost);
+            cn.AddValue("lv3Boost", Lv3Boost);
+            cn.AddValue("lv2Boost", Lv2Boost);
+            cn.AddValue("lv1Boost", Lv1Boost);
+            cn.AddValue("lv0Boost", Lv0Boost);
             cn.AddValue("pilotSkills", PilotSkills);
             cn.AddValue("scientistSkills", ScientistSkills);
             cn.AddValue("engineerSkills", EngineerSkills);

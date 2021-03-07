@@ -26,7 +26,7 @@ namespace BetterExperienceSystem
             }
             //TODO: We can probably optimise this a bit, doing a lot of loops every frame
             float pilotModifier = Utilities.SkillModifier("FullVesselControlSkill", vessel.protoVessel);
-            if (pilotModifier == Settings.Lv0Boost) pilotModifier = -0.1f;
+            if (pilotModifier == Settings.Lv0Boost) pilotModifier = Settings.Lv0Boost - 0.1f;
             float friendlyBonus = pilotModifier * 100;
             friendlyBonus = (float)Math.Round(friendlyBonus, 0);
             foreach (Propellant p in propellantList)
