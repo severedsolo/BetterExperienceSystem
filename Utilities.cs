@@ -66,11 +66,34 @@ namespace BetterExperienceSystem
             return level;
         }
 
+        public static float SkillModifier(string skillToCheck, ProtoVessel pv)
+        {
+            int maxKerbalLevel = SkillLevel(skillToCheck, pv);
+            switch (maxKerbalLevel)
+            {
+                case 5:
+                    return 0.10f;
+                case 4: 
+                    return 0.08f;
+                case 3:
+                    return 0.06f;
+                case 2:
+                    return 0.04f;
+                case 1:
+                    return 0.02f;
+                case 0:
+                    return 0.00f;
+                default:
+                    return -0.10f;
+            }
+        }
+        
         public static int SkillLevel(string skillToCheck, ProtoVessel pv)
         {
             int level = -1;
             if (pv == null) return level;
-            if(skillToCheck == "FullVesselControlSkill") return PilotLevel(pv);
+            //Keeping the stock premise that probe cores can be "Pilots" so need to get the SAS Level too. 
+            if (skillToCheck == "FullVesselControlSkill") level = Math.Max(GetSasLevel(pv), level);
             List<ProtoCrewMember> crew = pv.GetVesselCrew();
             for (int i = 0; i < crew.Count; i++)
             {
@@ -81,20 +104,7 @@ namespace BetterExperienceSystem
 
             return level;
         }
-
-        private static int PilotLevel(ProtoVessel pv)
-        {
-            int pilotLevel = Math.Max(GetSasLevel(pv), -1);
-            List<ProtoCrewMember> crew = pv.GetVesselCrew();
-            for (int i = 0; i < crew.Count; i++)
-            {
-                ProtoCrewMember p = crew.ElementAt(i);
-                if (!p.HasEffect("FullVesselControlSkill")) continue;
-                pilotLevel = Math.Max(p.experienceLevel, pilotLevel);
-            }
-
-            return pilotLevel;
-        }
+        
         private static float ConvertedStockLevelXp(float value)
         {
             for (int i = 0; i < stockLevels.Length; i++)

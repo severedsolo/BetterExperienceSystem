@@ -27,7 +27,6 @@ namespace BetterExperienceSystem
 
         private void Start()
         {
-            if (!Settings.ModEnabled) return;
             Logging.Log("Starting Harmony Patcher", LogLevel.Info);
             HarmonyInstance harmony = HarmonyInstance.Create("BetterExperienceSystem");
             harmony.PatchAll(Assembly.GetExecutingAssembly());

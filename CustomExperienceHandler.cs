@@ -10,13 +10,22 @@ namespace BetterExperienceSystem
     {
         private void Start()
         {
-            if (!Settings.ModEnabled) return;
-            if (!Settings.Skills) return;
-            GameEvents.OnVesselRecoveryRequested.Add(ProcessPilotXp);
-            GameEvents.OnScienceRecieved.Add(ProcessScientistXp);
-            GameEvents.OnEVAConstructionModePartAttached.Add(OnEvaConstruct);
-            GameEvents.OnEVAConstructionModePartDetached.Add(OnEvaConstruct);
-            GameEvents.onVesselSOIChanged.Add(OnSOIChange);
+            if (Settings.PilotSkills)
+            {
+                GameEvents.OnVesselRecoveryRequested.Add(ProcessPilotXp);
+                GameEvents.onVesselSOIChanged.Add(OnSOIChange);
+            }
+
+            if (Settings.ScientistSkills)
+            {
+                GameEvents.OnScienceRecieved.Add(ProcessScientistXp);
+            }
+
+            if (Settings.EngineerSkills)
+            {
+                GameEvents.OnEVAConstructionModePartAttached.Add(OnEvaConstruct);
+                GameEvents.OnEVAConstructionModePartDetached.Add(OnEvaConstruct);
+            }
         }
 
         private static void OnSOIChange(GameEvents.HostedFromToAction<Vessel, CelestialBody> eventData)

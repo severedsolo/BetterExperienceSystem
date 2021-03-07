@@ -8,6 +8,7 @@ namespace BetterExperienceSystem
     {
         private List<Propellant> propellantList = new List<Propellant>();
         private ModuleEngines referenceEngine;
+        private bool showMessage = true;
 
         private void Start()
         {
@@ -17,11 +18,15 @@ namespace BetterExperienceSystem
 
         private void FixedUpdate()
         {
-            if (!Settings.ModEnabled) return;
-            if (!Settings.Skills) return;
-            if (referenceEngine.currentThrottle == 0) return;
+            if (!Settings.PilotSkills) return;
+            if (referenceEngine.currentThrottle == 0)
+            {
+                showMessage = true;
+                return;
+            }
             //TODO: We can probably optimise this a bit, doing a lot of loops every frame
-            float pilotModifier = PilotModifier();
+            float pilotModifier = Utilities.SkillModifier("FullVesselControlSkill", vessel.protoVessel);
+            if (pilotModifier == Settings.Lv0Boost) pilotModifier = -0.1f;
             float friendlyBonus = pilotModifier * 100;
             friendlyBonus = (float)Math.Round(friendlyBonus, 0);
             foreach (Propellant p in propellantList)
@@ -32,32 +37,10 @@ namespace BetterExperienceSystem
                 part.RequestResource(p.name, propToTake);
             }
 
+            if (!showMessage) return;
             ScreenMessages.PostScreenMessage(Utilities.HighestRankKerbal("FullVesselControlSkill", vessel.protoVessel) + " in command. " + friendlyBonus + "% fuel bonus in effect");
+            showMessage = false;
         }
         
-
-        private float PilotModifier()
-        {
-            int pilotLevel = Utilities.SkillLevel("FullVesselControlSkill", vessel.protoVessel);
-            switch (pilotLevel)
-            {
-                case 5:
-                    return 0.10f;
-                case 4: 
-                    return 0.08f;
-                case 3:
-                    return 0.06f;
-                case 2:
-                    return 0.04f;
-                case 1:
-                    return 0.02f;
-                case 0:
-                    return 0.00f;
-                default:
-                    return -0.10f;
-            }
-        }
-
-
     }
 }
