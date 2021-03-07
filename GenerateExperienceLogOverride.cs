@@ -12,7 +12,9 @@ namespace BetterExperienceSystem
     public static class GenerateExperienceLogOverride
     {
         [UsedImplicitly]
-        private static void Postfix(ref string result, FlightLog log)
+        // ReSharper disable once InconsistentNaming
+        // ReSharper disable once RedundantAssignment
+        private static void Postfix(ref string __result, FlightLog log)
         {
             Dictionary<string, float> xpStrings = new Dictionary<string, float>();
             for (int i = 0; i < log.Entries.Count; i++)
@@ -33,7 +35,7 @@ namespace BetterExperienceSystem
                 sb.AppendLine(kvp.Key+" = "+Math.Round(kvp.Value, 0));
             }
 
-            result = sb.ToString();
+            __result = sb.ToString();
         }
     }
 }

@@ -9,7 +9,8 @@ namespace BetterExperienceSystem
     public static class CalculateExperienceLevelOverride
     {
         [UsedImplicitly]
-        private static void Postfix(ref float xp, ref int result)
+        // ReSharper disable once InconsistentNaming
+        private static void Postfix(ref float xp, ref int __result)
         {
             for (int i = 5; i >= 0; i--)
             {
@@ -18,40 +19,40 @@ namespace BetterExperienceSystem
                     case 5:
                         if (xp >= Settings.Lv5Target)
                         {
-                            result = 5;
+                            __result = 5;
                             return;
                         }
                         break;
                     case 4:
                         if (xp >= Settings.Lv4Target)
                         {
-                            result = 4;
+                            __result = 4;
                             return;
                         }
                         break;
                     case 3:
                         if (xp >= Settings.Lv3Target)
                         {
-                            result = 3;
+                            __result = 3;
                             return;
                         }
                         break;
                     case 2:
                         if (xp >= Settings.Lv2Target)
                         {
-                            result = 2;
+                            __result = 2;
                             return;
                         }
                         break;
                     case 1:
                         if (xp >= Settings.Lv1Target)
                         {
-                            result = 1;
+                            __result = 1;
                             return;
                         }
                         break;
                     default:
-                        result = 0;
+                        __result = 0;
                         return;
                 }
             }
