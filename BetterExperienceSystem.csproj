@@ -244,6 +244,7 @@
         <Compile Include="ProtoCrewMember_ExperienceDeltaOverride.cs" />
         <Compile Include="ScientistScript.cs" />
         <Compile Include="Settings.cs" />
+        <Compile Include="SettingsScript.cs" />
         <Compile Include="Utilities.cs" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

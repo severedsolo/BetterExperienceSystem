@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Harmony;
@@ -18,6 +19,7 @@ namespace BetterExperienceSystem
             Instance = this;
             Settings.LoadSettings();
         }
+
         private static void SetupSkillBasedXp()
         {
             KerbalRoster.AddExperienceType("pilotXP", "Completed a flight to ", 1.0f, 1.0f);
@@ -32,22 +34,11 @@ namespace BetterExperienceSystem
             harmony.PatchAll(Assembly.GetExecutingAssembly());
             Logging.Log("Patching Complete", LogLevel.Info);
             SetupSkillBasedXp();
-            GameEvents.onGameStateLoad.Add(OnLoad);
-        }
-
-        private static void OnLoad(ConfigNode data)
-        {
-            Settings.LoadSettings();
         }
 
         public void RegisterNewExperienceType(string xpName, string typeName, float notHomeValue, float homeValue = 0)
         {
             XpTypes[xpName] = new BetterExperienceType(xpName, typeName, notHomeValue, homeValue);
-        }
-
-        private void OnDisable()
-        {
-            GameEvents.onGameStateLoad.Remove(OnLoad);
         }
     }
 }

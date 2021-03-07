@@ -1,5 +1,6 @@
 using Harmony;
 using JetBrains.Annotations;
+// ReSharper disable InconsistentNaming
 
 namespace BetterExperienceSystem
 {
@@ -10,10 +11,9 @@ namespace BetterExperienceSystem
     {
         [UsedImplicitly]
         // ReSharper disable once RedundantAssignment
-        // ReSharper disable once InconsistentNaming
-        private static void Postfix(ref float __result, ProtoCrewMember instance)
+        private static void Postfix(ref float __result, ProtoCrewMember __instance)
         {
-            float currentXp = KerbalRoster.CalculateExperience(instance.careerLog);
+            float currentXp = KerbalRoster.CalculateExperience(__instance.careerLog);
             int currentLevel = KerbalRoster.CalculateExperienceLevel(currentXp);
             //Calcs go weird above max level so just return 1.0f;
             if (currentLevel == 5)
